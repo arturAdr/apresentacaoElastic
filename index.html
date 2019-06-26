@@ -1,0 +1,306 @@
+<!doctype html>
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+	<title>Buscas Eficientes.</title>
+
+	<link rel="stylesheet" href="css/reset.css">
+	<link rel="stylesheet" href="css/reveal.css">
+	<link rel="stylesheet" href="css/theme/black.css">
+
+	<!-- Theme used for syntax highlighting of code -->
+	<link rel="stylesheet" href="lib/css/monokai.css">
+
+	<!-- Printing and PDF exports -->
+	<script>
+		var link = document.createElement('link');
+		link.rel = 'stylesheet';
+		link.type = 'text/css';
+		link.href = window.location.search.match(/print-pdf/gi) ? 'css/print/pdf.css' : 'css/print/paper.css';
+		document.getElementsByTagName('head')[0].appendChild(link);
+	</script>
+</head>
+
+<body>
+	<div class="reveal">
+		<div class="slides">
+			<section>
+				Buscas Eficientes.
+				<br>
+				Uma introdução ao Elasticsearch.
+			</section>
+			<section>
+				<section>
+					Artur Ribeiro <br>
+					<img width="400px" data-src="images/eu.jpeg">
+				</section>
+				<section>
+					<img data-src="images/code.gif">
+				</section>
+				<section>
+					<img data-src="images/eu.gif">
+				</section>				
+			</section>
+			<section>
+				<section>
+					A importância da busca.
+				</section>
+				<section>
+					Todo mundo que utiliza a internet está sempre procurando por algo,
+					muitas vezes no sentido literal, ou seja,
+					digitando em algum mecanismo de busca para obter um retorno satisfatório.
+				</section>
+				<section>
+					<img data-src="images/search.gif">
+				</section>
+				<section>
+					O Google chega a receber mais de 100 bilhões de buscas por mês.
+				</section>
+				<section>
+					Dado esta importância, o usuário possui algumas exigências:
+					<br>
+					<ul>
+						<li>
+							Velocidade de resposta.
+						</li>
+						<li>
+							Relevância do conteúdo.
+						</li>
+					</ul>
+				</section>
+			</section>
+			<section>
+				<section>
+					<img data-src="images/chapolin.gif">
+				</section>
+				<section>
+					Elasticsearch.
+				</section>
+			</section>
+			<section>
+				<section>
+					O que é?
+				</section>
+				<section>
+					Elasticsearch é um mecanismo de busca open source,
+					desenvolvido ‘em cima’ do Apache Lucene, uma engine de pesquisa full-text
+					super complexa de se trabalhar. Em resumo, o elastic abstrai a api do lucene para
+					que possamos fazer pesquisas full-text.
+				</section>
+				<section>
+					Além de nos abstrair o Apache Lucene, ele possui algumas features:
+					<br>
+					<ul>
+						<li>suporte a thread-pool, queues, cluster, monitoramento;</li>
+						<li>Ser uma aplicação distribuída, altamente escalável de forma horizontal;</li>
+						<li>Alta disponibilidade;</li>
+						<li>Schema-less (não exige declaração do esquema a ser utilizado).</li>
+						<li>disponibiliza uma api restFul.</li>
+					</ul>
+				</section>
+			</section>
+			<section>
+				Algumas gigantes do mercado mundial que usam:
+				<ul>
+					<li>
+						Netflix
+					</li>
+					<li>
+						Facebook
+					</li>
+					<li>
+						Dell
+					</li>
+					<li>
+						Airbus
+					</li>
+					<li>
+						Blizzard
+					</li>
+					<li>
+						Tevec
+					</li>
+				</ul>
+			</section>
+			<section>
+				Como Elasticsearch funciona?
+				<section>
+					Para ajudar a entender como ele manipula dados, podemos fazer uma analogia a um banco de dados.
+
+					O Elasticsearch armazena os dados utilizando o conceito de “schema-less”.
+					Isso significa que não é necessário definir a estrutura dos dados que serão inseridos de maneira
+					prévia,
+					como acontece com bancos de dados relacionais.
+				</section>
+				<section>
+
+					Fazendo uma analogia com os tradicionais bancos relacionais a estrutura dos dados utilizados
+					pelo Elasticsearch seria:
+
+					<ul>
+						<li>
+							Índices: são os banco de dados.
+						</li>
+						<li>
+							Tipos: a tabela do banco, (Descontinuado, para versões mais novas é permitido apenas um tipo
+							por índice, ou seja, não é mais o conceito de banco e tabelas).
+						</li>
+						<li>
+							Documentos: registros do banco de dados
+						</li>
+						<li>
+							Campos: colunas
+						</li>
+					</ul>
+
+				</section>
+				<section>
+					<pre>
+						<code class="hljs JSON" data-trim contenteditable style="font-size: 18px;">
+							{
+								"name": "0298386-CAPA ALMOF BORDA ANITA 40CM",
+								"code": "0298386",
+								"tags": [
+									{
+									"value": [
+										"DECORACAO"
+									],
+									"key": "default"
+									}
+								],
+								"purchase_cost": 0,
+								"category": "DECORACAO"
+							}
+						</code>
+					</pre>
+				</section>
+				<section>
+
+					Falando um pouco da “infraestrutura”, temos alguns termos importantes para aprender:
+
+					<ul>
+						<li>Cluster: conjunto de nós, é o topo da hierarquia</li>
+						<li>Nós: entidades que armazenam os dados (normalmente cada nó é um computador, mas isso não é
+							sempre verdade)</li>
+						<li>Shard: particionamento do dado dentro do nó (é também uma instância do Lucene).</li>
+						<li>Réplica Shard: Uma réplica exata de um shard primário armazenada em outro nó.</li>
+					</ul>
+
+				</section>
+
+				<section>
+					<img data-src="images/elas_0205-1.png">
+					<br>
+					P* = Shards primário
+					<br>
+					R* = Replica dos Shards
+				</section>
+
+			</section>
+			<section>
+				API
+				<ul>
+					<li>Cluster API: operações a nível de cluster, como obter status dos nós.</li>
+					<li>Index API: responsável por manipular os índices, como salvar dados versionados.</li>
+					<li>Get API: permite buscar utilizando o método HTTP GET.</li>
+					<li>Bulk API: realizar operações para múltiplos índices e dados em um único request.</li>
+				</ul>
+			</section>
+			<section>
+				<section>
+					Por que as buscas são tão rápidas com bons resultados?
+				</section>
+				<section>
+					1° - porque o Elasticsearch foi construído para facilitar o gerenciamento das suas atividades de forma simples 
+					e eficiente conforme já explicamos, permitindo assim escalar a infraestrutura conforme necessidade.
+				</section>
+				<section>
+					2° - sua estrutura de armazenamento. Ele grava as informações de uma forma diferente dos tradicionais banco de dados 
+					relacionais, utilizando uma estrutura que chamamos de índice invertido.
+				</section>
+				<section>
+					Imagine uma tabela de “artigos”:
+					<img data-src="images/artigos1.png">
+				</section>
+				<section>
+					Teríamos que utilizar um SQL parecido com esse:
+					
+					<pre>
+						<code class="hljs sql" data-trim contenteditable style="font-size: 18px;">
+							SELECT * FROM artigo WHERE titulo LIKE ‘%Brasil%’ OR texto LIKE ‘%Brasil%’;
+						</code>
+					</pre>
+				</section>
+				<section>
+					FULL SCAN<br>
+					<img data-src="images/fullscan.gif">
+				</section>
+				<section>
+					É nessa hora que nosso amigo índice invertido se destaca. 
+					Sua estrutura é montada através das palavras, chamadas de “termos” no Elasticsearch.
+					<br>
+					<img data-src="images/indiceInvertido.png">
+				</section>
+				<section>
+					Tipos de Analyzers: <br>
+					 - Standard Analyzer <br>
+					 - Simple Analyzer <br>
+					 - Whitespace Analyzer <br>
+					 - Stop Analyzer <br>
+					 - Keyword Analyzer <br>
+					 - Pattern Analyzer <br>
+					 - Language Analyzers <br>
+					 - Fingerprint Analyzer <br>
+					 - Custom Analyzer <br>
+				</section>
+			</section>
+			<section>
+				<section>
+					Foi feito só para buscas?
+				</section>
+				<section>
+					<img data-src="images/nope.gif">
+				</section>
+				<section>
+					Como consta na própria documentação da empresa responsável “é utilizado para muitos casos além de full-text search, 
+					como analytics, auto complete, spell checker, engine de alerta, armazenamento de logs, etc”.
+				</section>
+			</section>
+			<section>
+				Conclusão
+				<section>
+					- Simples de configurar. <br>
+					- Possui uma flexibilidade incrível. <br>
+					- É uma excelente opção para se trabalhar com busca de dados. <br>
+					- Tem o poder de executar consultas de maneira rápida e com excelente relevância dos resultados. <br>
+					- A comunidade é participativa <br>
+					- Possui uma excelente documentação.
+				</section>
+			</section>
+			<section>
+				<img data-src="images/thanks.gif">
+			</section>
+		</div>
+	</div>
+
+	<script src="js/reveal.js"></script>
+
+	<script>
+		// More info about config & dependencies:
+		// - https://github.com/hakimel/reveal.js#configuration
+		// - https://github.com/hakimel/reveal.js#dependencies
+		Reveal.initialize({
+			dependencies: [
+				{ src: 'plugin/markdown/marked.js' },
+				{ src: 'plugin/markdown/markdown.js' },
+				{ src: 'plugin/notes/notes.js', async: true },
+				{ src: 'plugin/highlight/highlight.js', async: true }
+			]
+		});
+	</script>
+</body>
+
+</html>
